@@ -27,7 +27,22 @@ Run the tool with Docker as follows:
 
 ```{bash}
 #| eval: false
+# Time it:
 docker run -v $(pwd):/app ghcr.io/urban-analytics-technology-platform/od2net:main /app/config.json
+# Summary:
+#   - Load network took 100.799767ms
+#     - Loading origins took 175.604547ms
+#     - Loading destinations took 174.229604ms
+#     - Loading zones from /app/input/zones.geojson took 714.082µs
+#     - Matching points to zones took 54.914894ms
+#     - Generating requests from /app/input/od.csv took 659.614µs
+#   - Loading or generating requests took 406.16771ms
+#     - Building RTree for matching request points to OSM nodes took 16.235263ms
+#   - Routing took 56.808164ms
+#   - Writing output CSV took 18.805512ms
+#   - Writing output GJ took 125.66129ms
+#   - Converting to pmtiles for rendering took 7.733441909s
+# - everything took 8.441747553s
 ```
 
 After that you should see the following in the output folder:
@@ -48,7 +63,10 @@ desire_lines = od::od_to_sf(od, zones)
 ```{r}
 #| eval: false
 # Requires API key:
-routes = cyclestreets::batch(desire_lines, username = "robinlovelace", wait = TRUE)
+system.time({
+  routes = cyclestreets::batch(desire_lines, username = "robinlovelace", wait = TRUE)
+})
+# 133 seconds
 rnet = stplanr::overline(routes, attrib = "count")
 sf::write_sf(rnet, "output/output-r.geojson")
 ```
