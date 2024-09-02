@@ -1,6 +1,9 @@
 ---
 title: "Demo of od2net"
 format: gfm
+execute: 
+  message: false
+  warning: false
 ---
 
 The in this repo is intended to demonstrate how to use [`od2net`](https://github.com/Urban-Analytics-Technology-Platform/od2net) to generate route networks and to compare the workflow, and results, with the R-based approach currently used in the NPT project.
@@ -33,7 +36,61 @@ After that you should see the following in the output folder:
 fs::dir_tree("output")
 ```
 
+## R minimum example
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+#| eval: false
+od = readr::read_csv("input/od.csv")
+zones = sf::read_sf("input/zones.geojson")
+desire_lines = od::od_to_sf(od, zones)
+# Requires API key:
+routes = cyclestreets::batch(desire_lines, username = "robinlovelace", wait = TRUE)
+rnet = stplanr::overline(routes, attrib = "count")
+sf::write_sf(rnet, "output/output-r.geojson")
+```
+
+## Comparison
+
+```{r}
+output_od2net = sf::read_sf("output/output.geojson")
+output_r = sf::read_sf("output/output-r.geojson")
+sum(sf::st_length(output_od2net))
+sum(sf::st_length(output_r))
+names(output_od2net)
+names(output_r)
+summary(output_od2net$way)
+```
+
+```{r}
+#| label: rnet-basic
+output_combined = bind_rows(
+  output_od2net |>
+    filter(!is.na(way)) |>
+    # Only large counts:
+    filter(count > 5) |>
+    mutate(source = "od2net"),
+  output_r |>
+    mutate(source = "R") |>
+    filter(count > 5)
+)
+central_edinburgh = zonebuilder::zb_zone("Edinburgh", n_circles = 2)
+output_combined = output_combined |>
+  sf::st_intersection(central_edinburgh)
+output_combined |>
+  ggplot() +
+  geom_sf(aes(colour = count)) +
+  scale_colour_viridis_c() +
+  facet_wrap(~source) +
+  theme_void()
+```
+
 ## Setup
+
+<details>
 
 Run the code on a computer with Ubuntu 22.04 after running the setup outlined in the link above.
 
@@ -49,5 +106,11 @@ gh repo clone Urban-Analytics-Technology-Platform/od2net
 # Copy the example to this folder:
 cp -r od2net/examples/edinburgh/* .
 cp -r od2net/
+```
+
+```{bash}
+#| eval: false
+# Setup quarto-publish:
+
 ```
 
