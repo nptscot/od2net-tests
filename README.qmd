@@ -27,8 +27,10 @@ python3 setup.py
 ```
 
 
-```{bash}
+You can also setup the files in the input folder as follows:
 
-```
 
+```{r}
+source("R/setup.R")
+main()
 ```
