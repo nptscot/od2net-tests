@@ -15,5 +15,5 @@ We will run the code on a computer with Ubuntu 22.04.
 #| eval: false
 gh repo clone Urban-Analytics-Technology-Platform/od2net
 # Copy the example to this folder:
-cp -r od2net/examples/edinburgh .
+cp -r od2net/examples/edinburgh/* .
 ```
