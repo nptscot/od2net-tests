@@ -40,13 +40,13 @@ fs::dir_tree("output")
 
 ```{r}
 library(tidyverse)
+od = readr::read_csv("input/od.csv")
+zones = sf::read_sf("input/zones.geojson")
+desire_lines = od::od_to_sf(od, zones)
 ```
 
 ```{r}
 #| eval: false
-od = readr::read_csv("input/od.csv")
-zones = sf::read_sf("input/zones.geojson")
-desire_lines = od::od_to_sf(od, zones)
 # Requires API key:
 routes = cyclestreets::batch(desire_lines, username = "robinlovelace", wait = TRUE)
 rnet = stplanr::overline(routes, attrib = "count")
@@ -63,6 +63,13 @@ sum(sf::st_length(output_r))
 names(output_od2net)
 names(output_r)
 summary(output_od2net$way)
+sum(output_od2net$count * sf::st_length(output_od2net), na.rm = TRUE) |>
+  units::set_units("km")
+sum(output_r$count * sf::st_length(output_r), na.rm = TRUE) |>
+  units::set_units("km")
+# Vs flow implied from desire lines (expectation: ~1.3 x this amount):
+sum(desire_lines$count * sf::st_length(desire_lines), na.rm = TRUE) |>
+  units::set_units("km")
 ```
 
 ```{r}
