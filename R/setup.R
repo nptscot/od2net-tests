@@ -1,5 +1,11 @@
 # Aim: generate input data for od2net with R
 
+make_zones = function(file = "https://raw.githubusercontent.com/nptscot/npt/main/data-raw/zones_edinburgh.geojson") {
+    zones = sf::read_sf(file)[1]
+    names(zones)[1] = "name"
+    sf::write_sf(zones, "input/zones.geojson", delete_dsn = TRUE)
+}
+
 getbbox_from_zones = function() {
   zones = sf::st_read("input/zones.geojson")
   bbox = sf::st_bbox(zones)
@@ -48,10 +54,10 @@ make_od = function() {
 
 main = function() {
     dir.create("input", showWarnings = FALSE)
+    make_zones()
     make_osm()
     # make_elevation()
     make_origins()
-    # make_zones()
     make_od()
 }
 

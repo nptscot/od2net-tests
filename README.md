@@ -12,25 +12,38 @@ The following is based on [`od2net`’s
 docs](https://github.com/Urban-Analytics-Technology-Platform/od2net/blob/main/docs/tutorial_examples.md#running-the-edinburgh-example)
 and the code in the examples/edinburgh folder.
 
-We will run the code on a computer with Ubuntu 22.04 after running the
-setup outlined in the link above.
+Setup the files in the input folder as follows:
 
-``` {bash}
-#| eval: false
-#| echo: false
-sudo apt install osmium-tool
+``` r
+source("R/setup.R")
+main()
 ```
 
-``` {bash}
-#| eval: false
+Run the tool with Docker as follows:
+
+``` bash
+docker run -v $(pwd):/app ghcr.io/urban-analytics-technology-platform/od2net:main /app/config.json
+```
+
+After that you should see the following in the output folder:
+
+``` r
+fs::dir_tree("output")
+```
+
+    output
+    ├── counts.csv
+    ├── output.geojson
+    └── rnet.pmtiles
+
+## Setup
+
+Run the code on a computer with Ubuntu 22.04 after running the setup
+outlined in the link above.
+
+``` bash
 gh repo clone Urban-Analytics-Technology-Platform/od2net
 # Copy the example to this folder:
 cp -r od2net/examples/edinburgh/* .
 cp -r od2net/
-python3 setup.py
 ```
-
-``` {bash}
-```
-
-\`\`\`
