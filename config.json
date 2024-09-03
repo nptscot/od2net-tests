@@ -11,7 +11,7 @@
     "destinations_path": "buildings.geojson"
   },
   "cost": "Distance",
-  "uptake": "GoDutchPCT",
+  "uptake": "identity",
   "lts": "BikeOttawa",
   "elevation_geotiff": "UK-dem-50m-4326.tif"
 }
