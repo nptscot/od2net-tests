@@ -45,6 +45,12 @@ docker run -v $(pwd):/app ghcr.io/urban-analytics-technology-platform/od2net:mai
 # - everything took 8.441747553s
 ```
 
+```{r}
+#| eval: false
+#| echo: false
+system("docker run -v $(pwd):/app ghcr.io/urban-analytics-technology-platform/od2net:main /app/config.json")
+```
+
 After that you should see the following in the output folder:
 
 ```{r}

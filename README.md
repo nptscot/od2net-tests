@@ -115,7 +115,7 @@ sum(output_od2net$count * sf::st_length(output_od2net), na.rm = TRUE) |>
   units::set_units("km")
 ```
 
-    11740.47 [km]
+    34685.34 [km]
 
 ``` r
 sum(output_r$count * sf::st_length(output_r), na.rm = TRUE) |>
